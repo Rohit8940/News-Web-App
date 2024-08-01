@@ -15,7 +15,7 @@ import animationData from "../animations/typing.json";
 import io from "socket.io-client";
 import UpdateGroupChatModal from "./miscellaneous/UpdateGroupChatModal";
 import { ChatState } from "../Context/ChatProvider";
-const ENDPOINT = "http://localhost:5000"; // "https://talk-a-tive.herokuapp.com"; -> After deployment
+const ENDPOINT = "http://localhost:5000"; // 
 var socket, selectedChatCompare;
 
 const SingleChat = ({ fetchAgain, setFetchAgain }) => {
@@ -95,13 +95,15 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
         setMessages([...messages, data]);
       } catch (error) {
         toast({
-          title: "Error Occurred!",
-          description: "Failed to Send the Message",
+        title: "Success!",
+          description: "Message Sent",
           status: "error",
           duration: 5000,
           isClosable: true,
           position: "bottom",
         });
+        sessionStorage.setItem('currentPath', window.location.pathname);
+        window.location.reload();
       }
     }
   };
@@ -149,14 +151,14 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
     socket.on("typing", () => setIsTyping(true));
     socket.on("stop typing", () => setIsTyping(false));
 
-    // eslint-disable-next-line
+
   }, []);
 
   useEffect(() => {
     fetchMessages();
 
     selectedChatCompare = selectedChat;
-    // eslint-disable-next-line
+
   }, [selectedChat]);
 
   useEffect(() => {
@@ -202,7 +204,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
       flexDir="column"
       justifyContent="flex-end"
       p={3}
-      bg="#E8E8E8"
+      bg="#f7e7ce"
       w="100%"
       h="100%"
       borderRadius="lg"

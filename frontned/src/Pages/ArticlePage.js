@@ -64,7 +64,7 @@ const ArticlePage = () => {
         fetchSavedArticles();
     }, [token]);
 
-    // Pagination logic
+  
     const indexOfLastArticle = currentPage * articlesPerPage;
     const indexOfFirstArticle = indexOfLastArticle - articlesPerPage;
     const currentArticles = articles.slice(indexOfFirstArticle, indexOfLastArticle);
@@ -80,7 +80,10 @@ const ArticlePage = () => {
         <div>
             <Navbar scrollToSavedArticles={scrollToSavedArticles} />
             <div style={{ padding: '20px' }}>
+                <div style={{display:'flex',justifyContent:'center',fontSize:'30px',marginBottom:'15px',fontWeight:'bold'}}>
                 <h1>News Articles</h1>
+                </div>
+               
                 {loading ? (
                     <p>Loading...</p>
                 ) : (
@@ -128,8 +131,10 @@ const ArticlePage = () => {
                     paginate={paginate}
                     currentPage={currentPage}
                 />
-
+                <div style={{display:'flex',justifyContent:'center',fontSize:'25px',fontWeight:'bold',margin:'20px'}}>
                 <h2 ref={savedArticlesRef}>Saved Articles</h2>
+                </div>
+                
                 <div style={{
                     display: 'flex',
                     flexWrap: 'wrap',

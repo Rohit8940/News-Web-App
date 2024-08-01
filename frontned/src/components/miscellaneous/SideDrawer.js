@@ -149,8 +149,8 @@ function SideDrawer() {
             </Text>
           </Button>
         </Tooltip>
-        <Text fontSize="2xl" fontFamily="Work sans">
-          Talk-A-Tive
+        <Text fontSize="2xl" fontFamily="Work sans" >
+          <p style={{fontWeight:'bolder'}}>Rohit's Chat App</p>
         </Text>
         <div style={{display:"flex",justifyContents:"space-around",gap:"20px"}}>
           <button onClick={handlearticle}>

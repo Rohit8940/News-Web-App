@@ -30,6 +30,7 @@ const SavedArticles = () => {
 
     return (
         <div style={{ padding: '20px' }}>
+            
             <h2>Saved Articles</h2>
             <div style={{
                 display: 'flex',
