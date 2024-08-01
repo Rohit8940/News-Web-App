@@ -118,8 +118,11 @@ const ArticlePage = () => {
                                 <div style={{ padding: '10px' }}>
                                     <h2 style={{ fontSize: '16px', margin: '0 0 10px' }}>{article.title}</h2>
                                     <p style={{ fontSize: '14px', color: '#555' }}>{article.description || 'No description available'}</p>
+                                    <div style={{display:'flex',gap:'20px',alignItems:'center',marginTop:'10px'}}>
                                     <a href={article.url} target="_blank" rel="noopener noreferrer" style={{ color: '#007bff', textDecoration: 'none' }}>Read more</a>
-                                    <button onClick={() => saveArticle(article)} style={{ marginTop: '10px' }}>Save Article</button>
+                                    <button onClick={() => saveArticle(article)} style={{color:'green',fontWeight:'bolder'}}>Save Article</button>
+                                    </div>
+                                    
                                 </div>
                             </div>
                         ))}

@@ -154,7 +154,7 @@ function SideDrawer() {
         </Text>
         <div style={{display:"flex",justifyContents:"space-around",gap:"20px"}}>
           <button onClick={handlearticle}>
-            News App
+            Browse Articles
           </button>
           <Menu>
             <MenuButton p={1}>
