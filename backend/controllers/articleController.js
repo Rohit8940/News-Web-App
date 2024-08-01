@@ -21,7 +21,7 @@ exports.saveArticle = async (req, res) => {
     }
 };
 
-// Get saved articles
+
 exports.getSavedArticles = async (req, res) => {
     const userId = req.user._id;
 
