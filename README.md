@@ -1,4 +1,6 @@
-THE WEBSITE IS NOT HOSTED SO YOU WILL HAVE TO RUN IT LOCALLY
+Google Drive link for the demo and coding part of the website - https://drive.google.com/drive/folders/1rEbA8c-JtD2K4NavIIwvGLN1GMs73IHr?usp=sharing
+
+<br>THE WEBSITE IS NOT HOSTED SO YOU WILL HAVE TO RUN IT LOCALLY
 
 Install all the dependencies by running the command  "NPM I" in backend as well as frontend folder<br>
 THE OVERVIEW OF THE PROJECT IS GIVEN IN THE GOOGLE DRIVE LINK<br>
