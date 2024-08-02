@@ -12,7 +12,7 @@ TO RUN THE FRONTEND<br>
 npm run start<br>
 
 
-Some Images and description in the articles are not displayed as no Image and no Description as it was not available from the API iteself.<br>
+Some Images and description in the articles are not displayed as no Image and no Description as it was not available from the API itself.<br>
 I have used my own API key in the app as your provided key was running initially but after a while it showed error as the api is limited to 100 request per 24 hour<br>
 
 
