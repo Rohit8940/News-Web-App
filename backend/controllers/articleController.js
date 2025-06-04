@@ -1,4 +1,4 @@
-const SavedArticle = require("../Models/SavedArticle");
+const SavedArticle = require("../models/SavedArticle");
 
 
 
