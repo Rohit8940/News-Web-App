@@ -9,20 +9,31 @@ const ArticlePage = () => {
     const [saved, setSaved] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [articlesPerPage] = useState(9);
-    let [token, setToken] = useState('');
+    const [token, setToken] = useState('');
     const savedArticlesRef = useRef(null);
 
     useEffect(() => {
-        let t = JSON.parse(localStorage.getItem('userInfo'));
-        setToken(t.token);
+        const t = JSON.parse(localStorage.getItem('userInfo'));
+        if (t && t.token) {
+            setToken(t.token);
+        }
     }, []);
+
+    useEffect(() => {
+        fetchArticles();
+    }, []);
+
+    useEffect(() => {
+        if (token) {
+            fetchSavedArticles();
+        }
+    }, [token]);
 
     const fetchArticles = async () => {
         try {
             const response = await axios.get(
-                `https://newsapi.org/v2/top-headlines?country=in&apiKey=e10d0a25c5a045b98b10a23f1224057d`
+                `https://newsapi.org/v2/everything?q=tesla&from=2025-05-04&sortBy=publishedAt&apiKey=04338cba0bc24e5abf75cf7d7ae80ad4`
             );
-            // too many requests in your api key so using mine
             setArticles(response.data.articles);
             setLoading(false);
         } catch (error) {
@@ -44,27 +55,22 @@ const ArticlePage = () => {
     };
 
     const saveArticle = async (article) => {
+        if (!token) {
+            alert('User not authenticated');
+            return;
+        }
         try {
             await axios.post('/api/saved/save', article, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
             });
-            fetchSavedArticles(); // Update the saved articles list
+            fetchSavedArticles(); // Refresh saved list
         } catch (error) {
             console.error("Error saving article:", error);
         }
     };
 
-    useEffect(() => {
-        fetchArticles();
-    }, []);
-
-    useEffect(() => {
-        fetchSavedArticles();
-    }, [token]);
-
-  
     const indexOfLastArticle = currentPage * articlesPerPage;
     const indexOfFirstArticle = indexOfLastArticle - articlesPerPage;
     const currentArticles = articles.slice(indexOfFirstArticle, indexOfLastArticle);
@@ -80,10 +86,16 @@ const ArticlePage = () => {
         <div>
             <Navbar scrollToSavedArticles={scrollToSavedArticles} />
             <div style={{ padding: '20px' }}>
-                <div style={{display:'flex',justifyContent:'center',fontSize:'30px',marginBottom:'15px',fontWeight:'bold'}}>
-                <h1>News Articles</h1>
+                <div style={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    fontSize: '30px',
+                    marginBottom: '15px',
+                    fontWeight: 'bold'
+                }}>
+                    <h1>News Articles</h1>
                 </div>
-               
+
                 {loading ? (
                     <p>Loading...</p>
                 ) : (
@@ -92,8 +104,8 @@ const ArticlePage = () => {
                         flexWrap: 'wrap',
                         gap: '20px',
                         justifyContent: saved.length === 1 ? 'center' : 'space-between',
-                    maxWidth: '1200px',
-                    margin: '0 auto'
+                        maxWidth: '1200px',
+                        margin: '0 auto'
                     }}>
                         {currentArticles.map((article, index) => (
                             <div key={index} style={{
@@ -104,7 +116,7 @@ const ArticlePage = () => {
                                 overflow: 'hidden',
                                 boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
                                 marginBottom: '20px',
-                                 maxWidth: '300px'
+                                maxWidth: '300px'
                             }}>
                                 <img
                                     src={article.urlToImage || 'https://via.placeholder.com/300?text=No+Image'}
@@ -118,26 +130,27 @@ const ArticlePage = () => {
                                 <div style={{ padding: '10px' }}>
                                     <h2 style={{ fontSize: '16px', margin: '0 0 10px' }}>{article.title}</h2>
                                     <p style={{ fontSize: '14px', color: '#555' }}>{article.description || 'No description available'}</p>
-                                    <div style={{display:'flex',gap:'20px',alignItems:'center',marginTop:'10px'}}>
-                                    <a href={article.url} target="_blank" rel="noopener noreferrer" style={{ color: '#007bff', textDecoration: 'none' }}>Read more</a>
-                                    <button onClick={() => saveArticle(article)} style={{color:'green',fontWeight:'bolder'}}>Save Article</button>
+                                    <div style={{ display: 'flex', gap: '20px', alignItems: 'center', marginTop: '10px' }}>
+                                        <a href={article.url} target="_blank" rel="noopener noreferrer" style={{ color: '#007bff', textDecoration: 'none' }}>Read more</a>
+                                        <button onClick={() => saveArticle(article)} style={{ color: 'green', fontWeight: 'bold' }}>Save</button>
                                     </div>
-                                    
                                 </div>
                             </div>
                         ))}
                     </div>
                 )}
+
                 <Pagination
                     articlesPerPage={articlesPerPage}
                     totalArticles={articles.length}
                     paginate={paginate}
                     currentPage={currentPage}
                 />
-                <div style={{display:'flex',justifyContent:'center',fontSize:'25px',fontWeight:'bold',margin:'20px'}}>
-                <h2 ref={savedArticlesRef}>Saved Articles</h2>
+
+                <div style={{ display: 'flex', justifyContent: 'center', fontSize: '25px', fontWeight: 'bold', margin: '20px' }}>
+                    <h2 ref={savedArticlesRef}>Saved Articles</h2>
                 </div>
-                
+
                 <div style={{
                     display: 'flex',
                     flexWrap: 'wrap',
@@ -174,6 +187,7 @@ const ArticlePage = () => {
                         </div>
                     ))}
                 </div>
+
                 <Pagination
                     articlesPerPage={articlesPerPage}
                     totalArticles={saved.length}
