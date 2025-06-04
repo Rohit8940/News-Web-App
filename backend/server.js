@@ -13,7 +13,13 @@ connectDB();
 const app = express();
 
 app.use(express.json());
+app.use(cors());
 
+app.use(cors({
+  origin: 'https://news-web-app-blond.vercel.app',  // Your React app URL here
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],       // Allowed HTTP methods
+  credentials: true,                                // If you use cookies/auth
+}));
 // Routes
 app.use("/api/user", userRoutes);
 app.use("/api/chat", chatRoutes);
