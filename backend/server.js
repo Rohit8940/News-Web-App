@@ -30,11 +30,12 @@ const server = http.createServer(app);
 app.use(express.json());
 
 // Enable CORS for all routes
-app.use(cors({
-  origin: "*",
-  methods: ["GET", "POST", "PUT", "DELETE"],
-  credentials: false,
-}));
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "*"); // Or your exact frontend domain
+  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
+  next();
+});
 
 app.options("*", cors());
 
