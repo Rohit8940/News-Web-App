@@ -1,33 +1,42 @@
-const path = require("path");
-require("dotenv").config({ path: path.resolve(__dirname, "./.env") });
-const cors = require("cors");
+import path from "path";
+import { fileURLToPath } from "url";
+import dotenv from "dotenv";
+import cors from "cors";
+import express from "express";
+import connectDB from "./config/db.js";
+import userRoutes from "./routes/userRoutes.js";
+import chatRoutes from "./routes/chatRoutes.js";
+import messageRoutes from "./routes/messageRoutes.js";
+import savedArticleRoutes from "./routes/savedArticles.js";
+import { notFound, errorHandler } from "./middleware/errorMiddleware.js";
+import { Server } from "socket.io";
+import http from "http";
 
-const express = require("express");
-const connectDB = require("./config/db");
-const userRoutes = require("./routes/userRoutes");
-const chatRoutes = require("./routes/chatRoutes");
-const messageRoutes = require("./routes/messageRoutes");
-const savedArticleRoutes = require("./routes/savedArticles");
-const { notFound, errorHandler } = require("./middleware/errorMiddleware");
+// Recreate __dirname
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
+// Load .env
+dotenv.config({ path: path.resolve(__dirname, "./.env") });
+
+// Connect to DB
 connectDB();
-const app = express();
 
+// Create app
+const app = express();
+const server = http.createServer(app);
+
+// Body parser
 app.use(express.json());
 
-// Use CORS **once** — Allow all origins for now
+// Enable CORS for all routes
 app.use(cors({
-  origin: "*",              // <-- Allow ALL origins; change to your domain for production
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  credentials: false,       // Credentials can't be used with '*' origin
-}));
-
-app.options("*", cors({
   origin: "*",
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  methods: ["GET", "POST", "PUT", "DELETE"],
   credentials: false,
 }));
 
+app.options("*", cors());
 
 // Routes
 app.use("/api/user", userRoutes);
@@ -35,14 +44,12 @@ app.use("/api/chat", chatRoutes);
 app.use("/api/message", messageRoutes);
 app.use("/api/saved", savedArticleRoutes);
 
-const __dirname1 = path.resolve();
-
 // Serve frontend in production
 if (process.env.NODE_ENV === "production") {
-  app.use(express.static(path.join(__dirname1, "/frontend/build")));
+  app.use(express.static(path.join(__dirname, "/frontend/build")));
 
   app.get("*", (req, res) =>
-    res.sendFile(path.resolve(__dirname1, "frontend", "build", "index.html"))
+    res.sendFile(path.resolve(__dirname, "frontend", "build", "index.html"))
   );
 } else {
   app.get("/", (req, res) => {
@@ -54,17 +61,17 @@ if (process.env.NODE_ENV === "production") {
 app.use(notFound);
 app.use(errorHandler);
 
+// Start server
 const PORT = process.env.PORT || 5000;
-
-const server = app.listen(PORT, () =>
+server.listen(PORT, () =>
   console.log(`Server running on PORT ${PORT}...`)
 );
 
 // Socket.io setup
-const io = require("socket.io")(server, {
+const io = new Server(server, {
   pingTimeout: 60000,
   cors: {
-    origin: "*",  // Allow all origins for sockets too; or set your exact frontend URL here
+    origin: "*",
     methods: ["GET", "POST"],
   },
 });
@@ -87,12 +94,10 @@ io.on("connection", (socket) => {
 
   socket.on("new message", (newMessageReceived) => {
     const chat = newMessageReceived.chat;
-
     if (!chat.users) return console.log("chat.users not defined");
 
     chat.users.forEach((user) => {
       if (user._id === newMessageReceived.sender._id) return;
-
       socket.in(user._id).emit("message received", newMessageReceived);
     });
   });
