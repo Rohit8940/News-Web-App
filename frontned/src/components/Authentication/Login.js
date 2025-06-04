@@ -7,6 +7,7 @@ import axios from "axios";
 import { useToast } from "@chakra-ui/react";
 import { useHistory } from "react-router-dom";
 import { ChatState } from "../../Context/ChatProvider";
+const ENDPOINT = process.env.REACT_APP_BACKEND_URL;
 
 const Login = () => {
   const [show, setShow] = useState(false);
@@ -21,6 +22,7 @@ const Login = () => {
 
 
   const submitHandler = async () => {
+    
     setLoading(true);
     if (!email || !password) {
       toast({
@@ -42,7 +44,7 @@ const Login = () => {
       };
 
       const { data } = await axios.post(
-        "/api/user/login",
+        `${ENDPOINT}/api/user/login`,
         { email, password },
         config
       );

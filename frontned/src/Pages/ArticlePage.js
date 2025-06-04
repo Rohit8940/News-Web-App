@@ -2,6 +2,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import Navbar from '../Pages/Navbar';
+const ENDPOINT = process.env.REACT_APP_BACKEND_URL;
 
 const ArticlePage = () => {
     const [articles, setArticles] = useState([]);
@@ -60,7 +61,7 @@ const ArticlePage = () => {
             return;
         }
         try {
-            await axios.post('/api/saved/save', article, {
+            await axios.post(`${ENDPOINT}/api/saved/save`, article, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
