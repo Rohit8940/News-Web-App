@@ -14,13 +14,14 @@ connectDB();
 const app = express();
 
 app.use(express.json());
-app.use(cors());
 
+// Use CORS **once** — Allow all origins for now
 app.use(cors({
-  origin: 'https://news-web-app-blond.vercel.app',  // Your React app URL here
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],       // Allowed HTTP methods
-  credentials: true,                                // If you use cookies/auth
+  origin: "*",              // <-- Allow ALL origins; change to your domain for production
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  credentials: false,       // Credentials can't be used with '*' origin
 }));
+
 // Routes
 app.use("/api/user", userRoutes);
 app.use("/api/chat", chatRoutes);
@@ -49,17 +50,15 @@ app.use(errorHandler);
 const PORT = process.env.PORT || 5000;
 
 const server = app.listen(PORT, () =>
-  console.log(`Server running on PORT ${PORT}...`.yellow.bold)
+  console.log(`Server running on PORT ${PORT}...`)
 );
 
 // Socket.io setup
 const io = require("socket.io")(server, {
   pingTimeout: 60000,
   cors: {
-    origin:
-      process.env.NODE_ENV === "production"
-        ? "https://news-web-app-blond.vercel.app/" // <-- change this to your deployed React app URL
-        : "http://localhost:3000",
+    origin: "*",  // Allow all origins for sockets too; or set your exact frontend URL here
+    methods: ["GET", "POST"],
   },
 });
 
@@ -93,7 +92,5 @@ io.on("connection", (socket) => {
 
   socket.off("setup", () => {
     console.log("USER DISCONNECTED");
-    // Note: userData is undefined here, so careful
-    // socket.leave(userData._id); 
   });
 });
