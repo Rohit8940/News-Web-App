@@ -22,6 +22,13 @@ app.use(cors({
   credentials: false,       // Credentials can't be used with '*' origin
 }));
 
+app.options("*", cors({
+  origin: "*",
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  credentials: false,
+}));
+
+
 // Routes
 app.use("/api/user", userRoutes);
 app.use("/api/chat", chatRoutes);
